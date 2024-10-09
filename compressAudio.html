@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio Compression</title>
+  <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.10.1/dist/ffmpeg.min.js"></script>
+</head>
+<body>
+  <h1>Compress Audio Files</h1>
+  <input type="file" id="audioFiles" multiple />
+  <button onclick="compressAudios()">Compress Selected Audios</button>
+  <div id="log"></div>
+
+  <script>
+    const { createFFmpeg, fetchFile } = FFmpeg;
+    const ffmpeg = createFFmpeg({ log: true });
+
+    async function compressAudios() {
+      const logElement = document.getElementById('log');
+      const files = document.getElementById('audioFiles').files;
+
+      if (!ffmpeg.isLoaded()) {
+        await ffmpeg.load();
+      }
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        logElement.innerHTML += `Compressing ${file.name}...<br/>`;
+
+        // Load the audio file into FFmpeg
+        ffmpeg.FS('writeFile', file.name, await fetchFile(file));
+
+        // Run the FFmpeg command to compress the audio
+        await ffmpeg.run('-i', file.name, '-b:a', '96k', `compressed_${file.name}`);
+
+        // Retrieve the compressed file
+        const data = ffmpeg.FS('readFile', `compressed_${file.name}`);
+
+        // Create a link to download the compressed file
+        const compressedBlob = new Blob([data.buffer], { type: 'audio/mp3' });
+        const downloadLink = document.createElement('a');
+        downloadLink.href = URL.createObjectURL(compressedBlob);
+        downloadLink.download = `compressed_${file.name}`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+
+        logElement.innerHTML += `Downloaded compressed_${file.name}<br/>`;
+      }
+    }
+  </script>
+</body>
+</html>
