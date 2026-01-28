@@ -1,40 +1,497 @@
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <title>Programmer's Playground</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Programmer's Playground">
-    <meta name="keywords" content="Programmer's Playground">
-    <meta name="author" content="Programmer's Playground">
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Programmer's Playground</title>
+  <meta name="description" content="Programmer's Playground builds practical apps for translation, study, and driving theory practice." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f4f1ed;
+      --ink: #1f1c1b;
+      --muted: #5f5853;
+      --accent: #ff8b3d;
+      --accent-2: #2a9d8f;
+      --card: #ffffff;
+      --shadow: 0 25px 60px rgba(31, 28, 27, 0.12);
+      --radius: 24px;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Space Grotesk", "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at top right, #ffe2c6 0%, transparent 55%),
+        radial-gradient(circle at 20% 10%, #d3f1ea 0%, transparent 45%),
+        var(--bg);
+      min-height: 100vh;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(1100px, 90vw);
+      margin: 0 auto;
+      padding: 32px 0 64px;
+    }
+
+    .site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 0 10px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    .brand {
+      font-family: "Fraunces", "Times New Roman", serif;
+      font-size: clamp(1.3rem, 2.5vw, 1.7rem);
+    }
+
+    .tagline {
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 32px;
+      align-items: center;
+      margin-top: 24px;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-size: 0.75rem;
+      color: var(--accent-2);
+      font-weight: 700;
+    }
+
+    h1 {
+      font-family: "Fraunces", "Times New Roman", serif;
+      font-size: clamp(2.3rem, 4vw, 3.2rem);
+      margin: 12px 0 16px;
+      line-height: 1.1;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin: 0 0 24px;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .stat {
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 16px;
+      padding: 14px 16px;
+      box-shadow: 0 8px 20px rgba(31, 28, 27, 0.08);
+      font-size: 0.9rem;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.2rem;
+      margin-bottom: 4px;
+    }
+
+    .hero-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card h2 {
+      font-size: 1.2rem;
+      margin: 0 0 8px;
+    }
+
+    .hero-card p {
+      margin: 0 0 16px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: #f4f4f4;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .apps {
+      margin-top: 56px;
+    }
+
+    .apps-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .apps-header h2 {
+      font-family: "Fraunces", "Times New Roman", serif;
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      margin: 0;
+    }
+
+    .apps-header p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 420px;
+    }
+
+    .app-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .app-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+      animation: rise 0.7s ease both;
+    }
+
+    .app-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(140deg, rgba(255, 139, 61, 0.12), transparent 45%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .app-card:hover::after {
+      opacity: 1;
+    }
+
+    .app-top {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .app-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      box-shadow: 0 10px 24px rgba(31, 28, 27, 0.18);
+      flex-shrink: 0;
+      object-fit: cover;
+    }
+
+    .app-title {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .app-desc {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+      position: relative;
+      z-index: 1;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .chip {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #f1f0ed;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .store-links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    .store-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(31, 28, 27, 0.12);
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      background: #fff;
+    }
+
+    .store-btn span {
+      display: inline-flex;
+      width: 20px;
+      height: 20px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      background: #f4f1ed;
+      font-size: 0.8rem;
+    }
+
+    .store-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(31, 28, 27, 0.12);
+    }
+
+    .footer {
+      margin-top: 64px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 700px) {
+      .site-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .hero-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .apps-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .app-card {
+        animation: none;
+      }
+
+      .store-btn {
+        transition: none;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>Programmer's Playground</h1>
+  <div class="container">
+    <header class="site-header">
+      <div class="brand">Programmer's Playground</div>
+      <div class="tagline">Focused mobile experiences for real-world study and practice.</div>
+    </header>
 
-  <h3>We have currently three mobile apps in Play Store and App Store.</h3>
+    <section class="hero">
+      <div>
+        <div class="eyebrow">App Studio</div>
+        <h1>Four apps that make learning, translation, and driving theory practice feel effortless.</h1>
+        <p class="lead">We build focused tools that remove friction — from quick translations to driving theory prep. Each app is available on Android and iOS.</p>
+        <div class="hero-stats">
+          <div class="stat"><strong>4</strong>Live apps</div>
+          <div class="stat"><strong>2</strong>Platforms</div>
+          <div class="stat"><strong>100%</strong>Focus-first UX</div>
+        </div>
+      </div>
+      <div class="hero-card">
+        <h2>What we ship</h2>
+        <p>Compact, fast apps that feel native, load instantly, and respect user attention.</p>
+        <div class="hero-actions">
+          <div class="pill">Offline-friendly</div>
+          <div class="pill">Clean design</div>
+          <div class="pill">Smart practice</div>
+        </div>
+        <article class="app-card">
+          <div class="app-top">
+            <img class="app-icon" src="assets/uk-driving-icon.png" alt="Driving Theory Practice Kit app icon" width="72" height="72" />
+            <div>
+              <h3 class="app-title">Driving Theory Practice Kit</h3>
+              <p class="app-desc">UK driving theory prep with focused practice, quick reviews, and confidence-building quizzes.</p>
+            </div>
+          </div>
+          <div class="chip-row">
+            <span class="chip">Driving Theory</span>
+            <span class="chip">Practice Kit</span>
+            <span class="chip">UK Prep</span>
+          </div>
+          <div class="store-links">
+            <a class="store-btn" href="https://play.google.com/store/apps/details?id=com.ukdrivinglicenseapp" target="_blank" rel="noopener noreferrer">
+              <span>GP</span>Google Play
+            </a>
+            <a class="store-btn" href="https://apps.apple.com/us/app/driving-theory-practice-kit/id6503441340" target="_blank" rel="noopener noreferrer">
+              <span>AS</span>App Store
+            </a>
+          </div>
+        </article>
 
-  <ul>
-    <li>Quiz Patente Tradotto 2024
-      <ul>
-        <li>Android: <a href="https://play.google.com/store/apps/details?id=com.patenteapp&hl=it&gl=it">https://play.google.com/store/apps/details?id=com.patenteapp&hl=it&gl=it</a></li>
-        <li>iOS: <a href="https://apps.apple.com/it/app/quiz-patente-tradotto-2024/id1671639426?l=en-GB">https://apps.apple.com/it/app/quiz-patente-tradotto-2024/id1671639426?l=en-GB</a></li>
-      </ul>
-    </li>
-    <br/>
-    <li>Bengali-English Translator
-      <ul>
-        <li>Android: <a href="https://play.google.com/store/apps/details?id=com.bengalienglishtranslator">https://play.google.com/store/apps/details?id=com.bengalienglishtranslator</a></li>
-        <li>iOS: <a href="https://apps.apple.com/store/app/bengali-english-translator/id6451495343?l=en-GB">https://apps.apple.com/store/app/bengali-english-translator/id6451495343?l=en-GB</a></li>
-      </ul>
-    </li>
-    <br/>
-    <li>Hindi-English Translator
-      <ul>
-        <li>Android: <a href="https://play.google.com/store/apps/details?id=com.hindienglishtranslator">https://play.google.com/store/apps/details?id=com.hindienglishtranslator</a></li>
-        <li>iOS: <a href="https://apps.apple.com/us/app/hindi-english-translator/id6459033358">https://apps.apple.com/us/app/hindi-english-translator/id6459033358</a></li>
-      </ul>
-    </li>
-  </ul>
+      </div>
+    </section>
+
+    <section class="apps">
+      <div class="apps-header">
+        <h2>Available now</h2>
+        <p>Choose your platform and start using the app that matches your translation or driving theory needs.</p>
+      </div>
+
+      <div class="app-grid">
+        <article class="app-card">
+          <div class="app-top">
+            <img class="app-icon" src="assets/patente-icon.png" alt="Quiz Patente Tradotto 2024 app icon" width="72" height="72" />
+            <div>
+              <h3 class="app-title">Quiz Patente Tradotto 2024</h3>
+              <p class="app-desc">Translated driving theory quizzes with fast practice sessions and clear explanations.</p>
+            </div>
+          </div>
+          <div class="chip-row">
+            <span class="chip">Driving License</span>
+            <span class="chip">Quiz Mode</span>
+            <span class="chip">Italian Prep</span>
+          </div>
+          <div class="store-links">
+            <a class="store-btn" href="https://play.google.com/store/apps/details?id=com.patenteapp&hl=it&gl=it" target="_blank" rel="noopener noreferrer">
+              <span>GP</span>Google Play
+            </a>
+            <a class="store-btn" href="https://apps.apple.com/it/app/quiz-patente-tradotto-2024/id1671639426?l=en-GB" target="_blank" rel="noopener noreferrer">
+              <span>AS</span>App Store
+            </a>
+          </div>
+        </article>
+
+        <article class="app-card">
+          <div class="app-top">
+            <img class="app-icon" src="assets/bn-icon.png" alt="Bengali-English Translator app icon" width="72" height="72" />
+            <div>
+              <h3 class="app-title">Bengali-English Translator</h3>
+              <p class="app-desc">Translate phrases instantly with a clean interface built for daily bilingual communication.</p>
+            </div>
+          </div>
+          <div class="chip-row">
+            <span class="chip">Bengali <-> English</span>
+            <span class="chip">Instant Translate</span>
+            <span class="chip">Everyday Use</span>
+          </div>
+          <div class="store-links">
+            <a class="store-btn" href="https://play.google.com/store/apps/details?id=com.bengalienglishtranslator" target="_blank" rel="noopener noreferrer">
+              <span>GP</span>Google Play
+            </a>
+            <a class="store-btn" href="https://apps.apple.com/store/app/bengali-english-translator/id6451495343?l=en-GB" target="_blank" rel="noopener noreferrer">
+              <span>AS</span>App Store
+            </a>
+          </div>
+        </article>
+
+        <article class="app-card">
+          <div class="app-top">
+            <img class="app-icon" src="assets/hn-icon.png" alt="Hindi-English Translator app icon" width="72" height="72" />
+            <div>
+              <h3 class="app-title">Hindi-English Translator</h3>
+              <p class="app-desc">Quick, accurate translations with a lightweight flow designed for everyday conversations.</p>
+            </div>
+          </div>
+          <div class="chip-row">
+            <span class="chip">Hindi <-> English</span>
+            <span class="chip">Fast Results</span>
+            <span class="chip">Clean UI</span>
+          </div>
+          <div class="store-links">
+            <a class="store-btn" href="https://play.google.com/store/apps/details?id=com.hindienglishtranslator" target="_blank" rel="noopener noreferrer">
+              <span>GP</span>Google Play
+            </a>
+            <a class="store-btn" href="https://apps.apple.com/us/app/hindi-english-translator/id6459033358" target="_blank" rel="noopener noreferrer">
+              <span>AS</span>App Store
+            </a>
+          </div>
+        </article>
+        <article class="app-card">
+          <div class="app-top">
+            <img class="app-icon" src="assets/uk-driving-icon.png" alt="Driving Theory Practice Kit app icon" width="72" height="72" />
+            <div>
+              <h3 class="app-title">Driving Theory Practice Kit</h3>
+              <p class="app-desc">UK driving theory prep with focused practice, quick reviews, and confidence-building quizzes.</p>
+            </div>
+          </div>
+          <div class="chip-row">
+            <span class="chip">Driving Theory</span>
+            <span class="chip">Practice Kit</span>
+            <span class="chip">UK Prep</span>
+          </div>
+          <div class="store-links">
+            <a class="store-btn" href="https://play.google.com/store/apps/details?id=com.ukdrivinglicenseapp" target="_blank" rel="noopener noreferrer">
+              <span>GP</span>Google Play
+            </a>
+            <a class="store-btn" href="https://apps.apple.com/us/app/driving-theory-practice-kit/id6503441340" target="_blank" rel="noopener noreferrer">
+              <span>AS</span>App Store
+            </a>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <footer class="footer">
+      Built by Programmer's Playground · Reach us for collaborations or custom app ideas.
+    </footer>
+  </div>
 </body>
 </html>
