@@ -10,7 +10,7 @@ import {
   ref,
   uploadBytesResumable
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
-import { firebaseConfig } from "./firebase-config.js";
+import { authorizedRecorderUids, firebaseConfig } from "./firebase-config.js";
 
 const chapterSelect = document.querySelector("#chapterSelect");
 const subchapterSelect = document.querySelector("#subchapterSelect");
@@ -18,11 +18,11 @@ const questionList = document.querySelector("#questionList");
 const questionCount = document.querySelector("#questionCount");
 const questionTemplate = document.querySelector("#questionTemplate");
 const pageNotice = document.querySelector("#pageNotice");
+const recorderContent = document.querySelector("#recorderContent");
 const authState = document.querySelector("#authState");
 const showLoginButton = document.querySelector("#showLoginButton");
 const logoutButton = document.querySelector("#logoutButton");
 const loginDialog = document.querySelector("#loginDialog");
-const closeLoginButton = document.querySelector("#closeLoginButton");
 const loginForm = document.querySelector("#loginForm");
 const loginError = document.querySelector("#loginError");
 
@@ -51,6 +51,7 @@ function hideNotice() {
 function initializeFirebase() {
   if (!firebaseConfigured) {
     authState.textContent = "Firebase setup needed";
+    showLoginButton.disabled = true;
     showNotice(
       "Question browsing and recording are ready. Add your Firebase values in firebase-config.js to enable login and uploads."
     );
@@ -62,10 +63,30 @@ function initializeFirebase() {
   storage = getStorage(firebaseApp);
 
   onAuthStateChanged(auth, user => {
-    currentUser = user;
-    authState.textContent = user ? user.email : "Not signed in";
-    showLoginButton.classList.toggle("hidden", Boolean(user));
-    logoutButton.classList.toggle("hidden", !user);
+    const authorizedUser = user && authorizedRecorderUids.includes(user.uid);
+
+    if (user && !authorizedUser) {
+      currentUser = null;
+      authState.textContent = "Account not authorized";
+      recorderContent.classList.add("hidden");
+      loginError.textContent = "This Firebase account is not authorized to use the recorder.";
+      if (!loginDialog.open) loginDialog.showModal();
+      signOut(auth);
+      return;
+    }
+
+    currentUser = authorizedUser ? user : null;
+    authState.textContent = authorizedUser ? user.email : "Not signed in";
+    showLoginButton.classList.toggle("hidden", Boolean(authorizedUser));
+    logoutButton.classList.toggle("hidden", !authorizedUser);
+    recorderContent.classList.toggle("hidden", !authorizedUser);
+
+    if (authorizedUser) {
+      if (loginDialog.open) loginDialog.close();
+    } else if (!loginDialog.open) {
+      loginDialog.showModal();
+    }
+
     refreshUploadButtons();
   });
 }
@@ -245,7 +266,7 @@ async function uploadRecording(card, questionId) {
 
   if (!currentUser) {
     setCardStatus(card, "Sign in as an authorized recorder before uploading.", "error");
-    loginDialog.showModal();
+    if (!loginDialog.open) loginDialog.showModal();
     return;
   }
 
@@ -324,24 +345,34 @@ showLoginButton.addEventListener("click", () => {
     return;
   }
   loginError.textContent = "";
-  loginDialog.showModal();
+  if (!loginDialog.open) loginDialog.showModal();
 });
 
-closeLoginButton.addEventListener("click", () => loginDialog.close());
 logoutButton.addEventListener("click", () => signOut(auth));
+
+loginDialog.addEventListener("cancel", event => {
+  if (!currentUser) event.preventDefault();
+});
 
 loginForm.addEventListener("submit", async event => {
   event.preventDefault();
   loginError.textContent = "";
 
   try {
-    await signInWithEmailAndPassword(
+    const credential = await signInWithEmailAndPassword(
       auth,
       document.querySelector("#emailInput").value,
       document.querySelector("#passwordInput").value
     );
+
+    if (!authorizedRecorderUids.includes(credential.user.uid)) {
+      await signOut(auth);
+      loginError.textContent = "This Firebase account is not authorized to use the recorder.";
+      return;
+    }
+
     loginForm.reset();
-    loginDialog.close();
+    if (loginDialog.open) loginDialog.close();
     hideNotice();
   } catch (error) {
     loginError.textContent = error.code === "auth/invalid-credential"

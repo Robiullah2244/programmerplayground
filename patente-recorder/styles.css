@@ -173,7 +173,6 @@ dialog::backdrop { background: rgba(13, 43, 36, 0.6); backdrop-filter: blur(3px)
 .login-form { position: relative; display: grid; gap: 1.1rem; padding: 2.2rem; }
 .login-form > p { margin: 0; color: var(--muted); line-height: 1.55; }
 .login-form .eyebrow { color: var(--orange-dark); }
-.dialog-close { position: absolute; top: 1rem; right: 1rem; border: 0; background: transparent; color: var(--muted); cursor: pointer; font-size: 1.7rem; }
 .form-error { min-height: 1.2rem; font-size: 0.82rem; }
 .hidden { display: none !important; }
 

@@ -10,3 +10,9 @@ export const firebaseConfig = {
   appId: "1:119728432001:web:b20634766fa5b10d6a7e80",
   measurementId: "G-7ZLDX86W3N"
 };
+
+// Only these Firebase Authentication users can enter the recorder interface.
+// Cloud Storage rules independently enforce the same list on the server.
+export const authorizedRecorderUids = [
+  "iuxgWxoauTdc1U6oyB4VxxCOibk2"
+];
