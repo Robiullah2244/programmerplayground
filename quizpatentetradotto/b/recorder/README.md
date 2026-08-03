@@ -1,9 +1,9 @@
 # Patente explanation recorder
 
-This page is served from `/patente-recorder/` and reads the existing files:
+This page is served from `/quizpatentetradotto/b/recorder/` and reads the existing files:
 
-- `../assets/PatenteChapters.json`
-- `../assets/PatenteQuestions.json`
+- `../../../assets/PatenteChapters.json`
+- `../../../assets/PatenteQuestions.json`
 
 ## Firebase setup
 
@@ -26,4 +26,4 @@ will not allow the JSON `fetch()` calls. For example:
 python3 -m http.server 8000
 ```
 
-Then visit `http://localhost:8000/patente-recorder/`.
+Then visit `http://localhost:8000/quizpatentetradotto/b/recorder/`.

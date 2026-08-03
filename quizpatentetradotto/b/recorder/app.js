@@ -94,8 +94,8 @@ function initializeFirebase() {
 async function loadData() {
   try {
     const [chapterResponse, questionResponse] = await Promise.all([
-      fetch("../assets/PatenteChapters.json"),
-      fetch("../assets/PatenteQuestions.json")
+      fetch("../../../assets/PatenteChapters.json"),
+      fetch("../../../assets/PatenteQuestions.json")
     ]);
 
     if (!chapterResponse.ok || !questionResponse.ok) {
