@@ -1,0 +1,20 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Replace the UID below with the UID from Firebase Authentication > Users.
+    // Each upload is stored at question-explanations/{questionId}.
+    match /question-explanations/{questionId} {
+      allow read: if true;
+
+      allow create, update: if request.auth != null
+        && request.auth.uid == "REPLACE_WITH_RECORDER_FIREBASE_UID"
+        && request.resource.size < 25 * 1024 * 1024
+        && request.resource.contentType.matches('audio/.*')
+        && request.resource.metadata.questionId == questionId;
+
+      allow delete: if request.auth != null
+        && request.auth.uid == "REPLACE_WITH_RECORDER_FIREBASE_UID";
+    }
+  }
+}
