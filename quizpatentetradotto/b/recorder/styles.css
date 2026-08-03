@@ -123,6 +123,7 @@ select:focus, input:focus { outline: 3px solid rgba(230, 108, 59, 0.2); border-c
 .question-card:focus-within { border-color: var(--ink); }
 .question-topline { display: flex; align-items: center; gap: 0.8rem; color: var(--muted); font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
 .question-position { color: var(--orange-dark); }
+.recording-badge { padding: 0.3rem 0.6rem; border-radius: 999px; background: var(--green-light); color: #27623d; }
 .answer-badge { margin-left: auto; padding: 0.3rem 0.6rem; border-radius: 999px; }
 .answer-true { background: var(--green-light); color: #27623d; }
 .answer-false { background: #f4ded6; color: var(--danger); }

@@ -6,11 +6,16 @@ import {
   signOut
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 import {
+  getDownloadURL,
+  getMetadata,
   getStorage,
   ref,
   uploadBytesResumable
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
-import { authorizedRecorderUids, firebaseConfig } from "./firebase-config.js";
+import {
+  authorizedRecorderUids,
+  firebaseConfig
+} from "./firebase-config.js?v=20260803-1";
 
 const chapterSelect = document.querySelector("#chapterSelect");
 const subchapterSelect = document.querySelector("#subchapterSelect");
@@ -177,7 +182,43 @@ function renderQuestions(subchapterId) {
     card.querySelector(".upload-button").addEventListener("click", () => uploadRecording(card, questionId));
 
     questionList.append(card);
+    checkExistingRecording(card, questionId);
   });
+}
+
+async function checkExistingRecording(card, questionId) {
+  if (!storage) return;
+
+  const storageReference = ref(storage, `question-explanations/${questionId}`);
+
+  try {
+    const [metadata, downloadUrl] = await Promise.all([
+      getMetadata(storageReference),
+      getDownloadURL(storageReference)
+    ]);
+
+    // Do not replace a new, unsaved browser recording with the older saved one.
+    if (recordings.has(questionId) || !card.isConnected) return;
+
+    card.classList.add("uploaded");
+    card.querySelector(".recording-badge").classList.remove("hidden");
+    card.querySelector(".start-button").innerHTML =
+      '<span class="record-dot"></span> Record replacement';
+
+    const preview = card.querySelector(".audio-preview");
+    preview.src = downloadUrl;
+    preview.classList.remove("hidden");
+
+    const recordedDate = metadata.updated
+      ? new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" })
+          .format(new Date(metadata.updated))
+      : "an earlier session";
+    setCardStatus(card, `Saved recording from ${recordedDate}.`, "success");
+  } catch (error) {
+    if (error.code !== "storage/object-not-found") {
+      setCardStatus(card, `Could not check saved recording: ${friendlyFirebaseError(error)}`, "error");
+    }
+  }
 }
 
 function preferredMimeType() {
@@ -225,7 +266,9 @@ async function startRecording(card, questionId) {
       preview.src = previewUrl;
       preview.classList.remove("hidden");
       card.querySelector(".start-button").disabled = false;
-      card.querySelector(".start-button").innerHTML = '<span class="record-dot"></span> Record again';
+      card.querySelector(".start-button").innerHTML = card.classList.contains("uploaded")
+        ? '<span class="record-dot"></span> Record replacement again'
+        : '<span class="record-dot"></span> Record again';
       card.querySelector(".stop-button").disabled = true;
       refreshUploadButtons();
       setCardStatus(card, "Recording ready to preview and submit.", "success");
@@ -299,6 +342,9 @@ async function uploadRecording(card, questionId) {
     () => {
       uploadRow.classList.add("hidden");
       card.classList.add("uploaded");
+      card.querySelector(".recording-badge").classList.remove("hidden");
+      recordings.delete(questionId);
+      uploadButton.disabled = true;
       uploadButton.textContent = "Uploaded";
       setCardStatus(card, `Saved as question-explanations/${questionId}`, "success");
     }
@@ -309,8 +355,13 @@ function refreshUploadButtons() {
   document.querySelectorAll(".question-card").forEach(card => {
     const questionId = Number(card.dataset.questionId);
     const button = card.querySelector(".upload-button");
-    if (!card.classList.contains("uploaded")) {
-      button.disabled = !recordings.has(questionId);
+    const hasNewRecording = recordings.has(questionId);
+    button.disabled = !hasNewRecording;
+
+    if (hasNewRecording) {
+      button.textContent = card.classList.contains("uploaded")
+        ? "Replace saved recording"
+        : "Submit recording";
     }
   });
 }
