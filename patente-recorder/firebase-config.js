@@ -2,9 +2,11 @@
 // This configuration identifies your Firebase project; authorization is enforced
 // by Firebase Authentication and Cloud Storage Security Rules.
 export const firebaseConfig = {
-  apiKey: "REPLACE_WITH_FIREBASE_API_KEY",
-  authDomain: "REPLACE_WITH_PROJECT_ID.firebaseapp.com",
-  projectId: "REPLACE_WITH_PROJECT_ID",
-  storageBucket: "REPLACE_WITH_PROJECT_ID.firebasestorage.app",
-  appId: "REPLACE_WITH_FIREBASE_APP_ID"
+  apiKey: "AIzaSyB6NoBjUG91VMHwbS_Im8pDsmuIuG7d8ZY",
+  authDomain: "programmer-s-playground.firebaseapp.com",
+  projectId: "programmer-s-playground",
+  storageBucket: "programmer-s-playground.firebasestorage.app",
+  messagingSenderId: "119728432001",
+  appId: "1:119728432001:web:b20634766fa5b10d6a7e80",
+  measurementId: "G-7ZLDX86W3N"
 };
