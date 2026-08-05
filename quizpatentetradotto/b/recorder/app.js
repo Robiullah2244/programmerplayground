@@ -173,6 +173,14 @@ function renderQuestions(subchapterId) {
     card.querySelector(".question-id").textContent = `Question ID ${questionId}`;
     card.querySelector(".question-text").textContent = text;
 
+    if (subchapter.signalImageId) {
+      const signalFigure = card.querySelector(".signal-figure");
+      const signalImage = card.querySelector(".signal-image");
+      signalImage.src = `../../../assets/signals/${subchapter.signalImageId}.gif`;
+      signalImage.alt = `Road signal ${subchapter.signalImageId}`;
+      signalFigure.classList.remove("hidden");
+    }
+
     const badge = card.querySelector(".answer-badge");
     badge.textContent = answer === "V" ? "Vero" : "Falso";
     badge.classList.add(answer === "V" ? "answer-true" : "answer-false");
